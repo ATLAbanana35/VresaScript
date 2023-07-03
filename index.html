@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>W3bVM Interface</title>
+  <style>
+    /* Ajoutez votre CSS personnalisé ici */
+  </style>
+</head>
+
+<body>
+  <h1>W3bVM Interface</h1>
+  <textarea id="code" rows="10" cols="50" placeholder="Saisissez votre code ici"></textarea>
+  <button class="runCode">Exécuter</button>
+  <div id="output"></div>
+   <script src="W3bVM.VersaScript.lib.js"></script>
+  <script type="module">
+  import { CompileEnv } from "./compilator.js"
+import { W3bVM_Env } from "./W3bVM.lib.js"
+
+  const ExecutionEnv = new W3bVM_Env();
+    const JSVM = new CompileEnv();
+    JSVM.funs = FUN;
+    JSVM.reloadParams();
+document.querySelector(".runCode").addEventListener("click", runCode)
+    function runCode() {
+      const code = document.getElementById('code').value;
+
+      try {
+        const compileCode = JSVM.COMPILE(code);
+        ExecutionEnv.execute(compileCode);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Manipulez le DOM pour afficher les résultats dans l'élément "output"
+    const outputElement = document.getElementById('output');
+
+    // Exemple d'affichage du résultat de la fonction print
+    function print(message) {
+      const messageElement = document.createElement('p');
+      messageElement.textContent = message;
+      outputElement.appendChild(messageElement);
+    }
+
+    // Exemple d'affichage du résultat de la fonction random
+    function random() {
+      const randomElement = document.createElement('p');
+      randomElement.textContent = Math.random();
+      outputElement.appendChild(randomElement);
+    }
+  </script>
+</body>
+
+</html>
