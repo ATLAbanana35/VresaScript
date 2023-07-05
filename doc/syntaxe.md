@@ -25,9 +25,9 @@ La déclaration de variable dans VersScript utilise le symbole `%`. Voici un exe
 
 ### Appel de fonctions intégrées
 VersScript fournit plusieurs fonctions intégrées pour des opérations courantes. Vous pouvez les appeler en utilisant leur nom suivi de parenthèses `()` contenant les arguments. Voici un exemple :
-
+#### ATTENTION A METTRE DES ESPACES
 ```VersScript
-nomDeFonction(arg1, arg2)
+nomDeFonction ( arg1, arg2 )
 ```
 
 ## Directives spéciales
