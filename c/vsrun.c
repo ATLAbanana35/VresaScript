@@ -12,19 +12,20 @@ typedef struct {
     int brut;
 } SpesItem;
 typedef struct {
-    const char* $;  
+    const char* $;
     const char* name;
 } VAR;
 typedef struct {
-    SpesItem items[3];
+    SpesItem items[5];
 } Spes;
 typedef struct {
     const char* equ_c;
+    const char* equ_c_close;
     const char* name;
     int brut;
 } FunItem;
 typedef struct {
-    FunItem items[4];
+    FunItem items[10];
 } Fun;
 size_t getLength(const void* obj) {
     const char* charPtr = (const char*)obj;
@@ -110,17 +111,16 @@ int countOccurrences(char* string, char* target) {
     return count;
 }
 
-char* compil3r(char* string[5000], Spes spes, Fun funs,char* DebugMessage) {
-    char string_sauv[1000] = "";
-    strcat(string_sauv ,string);
-    char* CODE = (char*)malloc(10000 * sizeof(char)); // Allocate memory for the code
-    CODE[0] = '\0'; // Initialize the code string as an empty string
+char* compil3r(char* string[5000], Spes spes, Fun funs, char* DebugMessage[5000]) {
+    char string_sauv[10000] = "";
+    strcat(string_sauv, string);
+    char CODE[10000] = ""; // Allocate memory for the code
     strcat(CODE, DebugMessage);
     char* lignechaine[1000]; // Tableau pour stocker chaque ligne de la chaîne
     int lignechaine_count = 0;
     // Découper la chaîne en lignes
     char* line;
-    const char s[80] = "\n";
+    const char s[8000] = "\n";
     line = my_strtok(string_sauv, s);
     while (line != NULL) {
         lignechaine[lignechaine_count++] = line;
@@ -128,7 +128,7 @@ char* compil3r(char* string[5000], Spes spes, Fun funs,char* DebugMessage) {
     }
 
     for (int ii = 0; ii < lignechaine_count; ii++) {
-        char ligne[80] = "";
+        char ligne[8000] = "";
         strcpy(ligne, lignechaine[ii]);
         char ligne_sauv[1000] = "";
         strcat(ligne_sauv, ligne);
@@ -137,7 +137,7 @@ char* compil3r(char* string[5000], Spes spes, Fun funs,char* DebugMessage) {
         int spaceligne_count = 0;
         const char sx[80] = " ";
         // Découper la ligne en mots
-        
+
         char* word = my_strtok(ligne_sauv, sx);
         while (word != NULL) {
             spaceligne[spaceligne_count++] = word;
@@ -164,34 +164,36 @@ char* compil3r(char* string[5000], Spes spes, Fun funs,char* DebugMessage) {
             }
             if (strcmp(NEXT, "function") == 0)
             {
-                char ch_keyword[] = "(";
-                int start = getPosition(ligne, ch_keyword, 1) + 1;
-                int end = getPosition(ligne, ")", 1);
+                int start = getPosition(ligne, "(", 1) + 1;
+                int end = getPosition(ligne, ")", countOccurrences(ligne, ")"));
                 char STRING_TO_ARG[1000] = { '\0' };
                 strncpy(STRING_TO_ARG, ligne + start, end - start);
 
-                    if (ligne[start] == '%') {
-                        end = strrchr(ligne, ')') - ligne;
-                            start += 1;
-                            strncpy(STRING_TO_ARG, ligne + start, end - start);
-                        STRING_TO_ARG[end - start] = '\0';
-                        char* compiledCode = compil3r(STRING_TO_ARG, spes, funs, "");
-                        int x = 10;
-                    }
-                    strcat(CODE, funs.items[iffun_index].equ_c);
-                    strcat(CODE, "(");
-                    strcat(CODE, STRING_TO_ARG);
-                    strcat(CODE, ");\n");
-                    NEXT = "new";
+                if (ligne[start] == '%') {
+                    end = strrchr(ligne, ')') - ligne;
+                    start += 1;
+                    strncpy(STRING_TO_ARG, ligne + start, end - start);
+                    STRING_TO_ARG[end - start] = '\0';
+                    char* compiledCode = compil3r(STRING_TO_ARG, spes, funs, "");
+                    int x = 10;
+                }
+                strcat(CODE, funs.items[iffun_index].equ_c);
+                strcat(CODE, STRING_TO_ARG);
+                strcat(CODE, funs.items[iffun_index].equ_c_close);
+                strcat(CODE, "\n");
+                NEXT = "new";
 
             }
-            for (int xi = 0; xi < sizeof(spes)/sizeof(SpesItem); xi++) {
+            for (int xi = 0; xi < sizeof(spes) / sizeof(SpesItem); xi++) {
                 if (strcmp(space, spes.items[xi].name) == 0) {
                     NEXT = "type";
                     iftype_brut = spes.items[xi].brut;
                     iftype_type = spes.items[xi].c_element;
-                        iftype_fun_autre = spes.items[xi].fun_key;
+                    iftype_fun_autre = spes.items[xi].fun_key;
                 }
+            }
+            if (strcmp(space, "external_lib") == 0) {
+
             }
             for (int i = 0; i < sizeof(funs) / sizeof(FunItem); i++) {
                 if (strcmp(space, funs.items[i].name) == 0) {
@@ -206,7 +208,7 @@ char* compil3r(char* string[5000], Spes spes, Fun funs,char* DebugMessage) {
                 iftype_endkeyword = ch_keyword;
                 int start = getPosition(string, ch_keyword, 1) + strlen(ch_keyword) + 1;
                 int end = getPosition(string, ch_keyword, 2);
-                char STRING_TO_COMPILE[1000] = "";
+                char STRING_TO_COMPILE[10000] = "";
                 strcat(STRING_TO_COMPILE, getString(start, end - start, string));
                 char sn[] = "\n";
                 int occ = countOccurrences(STRING_TO_COMPILE, sn);
@@ -214,7 +216,7 @@ char* compil3r(char* string[5000], Spes spes, Fun funs,char* DebugMessage) {
 
                 if (iftype_brut == 0) {
                     // TODO: Stocker le code compilé dans iftype_innerCODE
-                    strcat(iftype_innerCODE, compil3r(STRING_TO_COMPILE, spes, funs,""));
+                    strcat(iftype_innerCODE, compil3r(STRING_TO_COMPILE, spes, funs, ""));
                 }
                 else {
                     strcat(iftype_innerCODE, STRING_TO_COMPILE);
@@ -282,7 +284,7 @@ int main(int argc, char* argv[]) {
     }
 
     // Read the contents of the source file
-    char str[5000];
+    char str[500000];
     size_t bytesRead = fread(str, sizeof(char), sizeof(str), file);
     str[bytesRead] = '\0'; // Add null-terminating character
 
@@ -294,19 +296,28 @@ int main(int argc, char* argv[]) {
         {
             { "int", "type", "()", "intfun", 0 },
             { "char* ", "type", "()", "strfun", 0 },
-            { "VAR", "type", " = ", "%", 1 }
+            { "VARSTRING", "type", " = ", "%_STR", 1 },
+            { "VARINT", "type", " = ", "%_INT", 1 },
+            { "VARFILE", "type", " = ", "%_FILE", 1 },
         }
     };
     Fun funs = {
     {
-        { "printf",  "printf" },
-        { "strcat",  "conc" },
-        { "scanf",  "input" },
-        { "return",  "return" },
+        { "printf(", ");","printf" },
+        { "printf(\"%s\", ", ");","varprint" },
+        { "strcat(",");", "conc" },
+        { "scanf(", ");","input" },
+        { "return(",");", "return" },
+        { "if (","};", "if" },
+        { "#include <", ">", "import"},
+        { "fget(", ");", "getfile"},
+        { "fset(", ");", "setfile"},
+        { "system(", ");", "command"}
+
     }
-    };  
-    char debugMessage[] = "// code starting here, compile: https://loines.ch (you can unput this message)\ntypedef struct {\nconst char $[1000];\n} VAR;\n#include <stdio.h>\n";
-    char* compiledCode = compil3r(str, spes, funs,debugMessage);
+    };
+    char debugMessage[] = "// code starting here, compile: https://loines.ch (you can unput this message)\n#include <stdio.h>\n#include <Windows.h>\ntypedef struct {\n char $[1000];\n} VARSTRING;\ntypedef struct {\nconst int $;\n} VARINT;\ntypedef struct {\nconst FILE* $;\n} VARFILE;\nvoid fset(const char* filePath, const char* data) { FILE* file = fopen(filePath, \"w+\"); if (file == NULL) { printf(\"Erreur : Impossible d'ouvrir le fichier %s.\"\n, filePath);\n return; } fprintf(file, \"\\0\"); fprintf(file, \"%s\", data); fclose(file); } char* fget(const char* filePath) { FILE* file = fopen(filePath, \"r\"); if (file == NULL) { printf(\"Erreur : Impossible d'ouvrir le fichier %s.\"\n\, filePath); return NULL; } char line[256]; char* content = (char*)malloc(1); size_t contentSize = 1; while (fgets(line, sizeof(line), file) != NULL) { size_t lineSize = strlen(line); content = realloc(content, contentSize + lineSize); strcat(content, line); contentSize += lineSize; } fclose(file); return content; }\nchar* GuP(const char* directory) { char userProfile[MAX_PATH]; if (GetEnvironmentVariableA(\"USERPROFILE\", userProfile, sizeof(userProfile)) == 0) { printf(\"Erreur : Impossible d'obtenir le chemin de profil de l'utilisateur.\\n\"); return NULL; } char* userPath = (char*)malloc(MAX_PATH); snprintf(userPath, MAX_PATH, \"%s\\%s\", userProfile, directory); return userPath; }\n";
+    char* compiledCode = compil3r(str, spes, funs, debugMessage);
 
     // Open the destination file in write mode
     FILE* destFile = fopen(destinationFile, "w");
@@ -322,7 +333,6 @@ int main(int argc, char* argv[]) {
     fclose(destFile);
 
     // Free the dynamically allocated memory
-    free(compiledCode);
 
     // Execute the command "vsex3c" if the "-c" argument is not passed
     if (configFile == NULL) {

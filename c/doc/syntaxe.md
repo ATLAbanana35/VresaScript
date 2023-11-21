@@ -8,19 +8,21 @@ VersScript est un langage de programmation simple et polyvalent qui combine des 
 
 ## Syntaxe de base
 ### Déclaration de fonctions
-La déclaration de fonction dans VersScript utilise le mot-clé `fun`. Voici un exemple :
+La déclaration de fonction dans VersScript utilise le mot-clé `intfun` (pour retourner un int) et `strfun` pour retourner un str. Voici un exemple :
 
 ```VersScript
-fun nomDeLaFonction <FINNOM>
+intfun nomDeLaFonction <FINNOM>
   // Code de la fonction ici
 FINNOM
 ```
 
 ### Déclaration de variables
-La déclaration de variable dans VersScript utilise le symbole `%`. Voici un exemple :
+La déclaration de variable dans VersScript utilise le symbole `%_` et le type (STR, INT ou FILE). Voici un exemple :
 
 ```VersScript
-% nomDeVariable = valeur
+%_STR NomDeLaVar <ENDNomDeLaVar>
+  "STR_de_la_var"
+ENDNomDeLaVar
 ```
 
 ### Appel de fonctions intégrées
@@ -48,10 +50,10 @@ ENDNUMBER
 Voici un exemple de code VersScript pour afficher "Hello World" :
 
 ```VersScript
-+ MonMessage = <EXE>
+%_STR MonMessage = <EXE>
 "Hello World"
 EXE
-fun MAIN <END>
-  print ( MonMessage.$ )
+intfun main <END>
+  varprint ( MonMessage.$ )
 END
 ```
