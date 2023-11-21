@@ -1,4 +1,4 @@
-Voici une documentation de base pour votre langage "VersScript" (Version C + JS), ici doc de la V C :
+Voici une documentation de base pour votre langage "VersScript" (Version C + JS), ici doc de la V C : https://github.com/ATLAbanana35/VresaScript/blob/main/c/doc/syntaxe.md
 
 ---
 # Documentation de VersScript
